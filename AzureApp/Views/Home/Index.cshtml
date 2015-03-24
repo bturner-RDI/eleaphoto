@@ -1,0 +1,44 @@
+﻿@using AzureApp.Business.Models;
+
+@model ImageDTO
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("GetLatestImage", "Image")',
+            success: getLatestImageSuccess,
+            dataType: "json"
+            });
+
+        function getLatestImageSuccess(data)
+        {
+            $("#latestImg").attr("src", "data:" + data.ContentType + ";base64," + data.Base64);
+        }
+    });
+
+</script>
+
+<div class="jumbotron">
+    <h1>Sadie Roo</h1>
+    <p class="lead">Sadie was the greatest dog ever...</p>
+    <img id="latestImg" src="data:@ViewBag.ContentType;base64,@ViewBag.LatestImageBase64" />
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Update Photo Above:</h2>
+        <p>
+            @using (Html.BeginForm("InsertImage", "Image", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.TextBoxFor(x => x.Name)<br/>
+                @:Image:<input type="file" name="file" id="file" />
+                <input type="submit" value="Upload" />
+            }
+        </p>
+    </div>
+
+</div>
